@@ -29,7 +29,9 @@ class UrlService(private val urlRepository: UrlRepository) {
         val urlOptional = urlRepository.findByShortCode(code)
         return if (urlOptional.isPresent) {
             val url = urlOptional.get()
-            urlRepository.deleteById(url?.id)
+            url.id?.let { id ->
+                urlRepository.deleteById(id)
+            }
             true
         } else {
             false
