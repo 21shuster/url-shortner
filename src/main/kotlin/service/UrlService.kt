@@ -20,4 +20,36 @@ class UrlService(private val urlRepository: UrlRepository) {
         return urlRepository.save(url)
     }
 
+    fun getOriginalUrl(code: String): String? {
+        val url = urlRepository.findById(code)
+        return url.orElse(null)?.originalUrl
+    }
+
+    fun deleteUrl(code: String): Boolean {
+        return if (urlRepository.existsById(code)) {
+            urlRepository.deleteById(code)
+            true
+        } else false
+    }
+
+    fun updateUrl(code: String, newUrl: String?, newDescription: String?): Url? {
+        val urlOptional = urlRepository.findById(code)
+        return if (urlOptional.isPresent) {
+            val url = urlOptional.get()
+            val updated = url.copy(
+                originalUrl = newUrl ?: url.originalUrl,
+                description = newDescription ?: url.description
+            )
+            urlRepository.save(updated)
+        } else null
+    }
+
+    fun incrementClicks(code: String) {
+        val urlOptional = urlRepository.findById(code)
+        if (urlOptional.isPresent) {
+            val url = urlOptional.get()
+            urlRepository.save(url.copy(clicks = url.clicks + 1))
+        }
+    }
+
 }
