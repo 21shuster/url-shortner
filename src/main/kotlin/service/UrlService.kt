@@ -52,4 +52,6 @@ class UrlService(private val urlRepository: UrlRepository) {
         }
     }
 
+    fun getAllUrls(): List<Url> = urlRepository.findAll()
+
 }

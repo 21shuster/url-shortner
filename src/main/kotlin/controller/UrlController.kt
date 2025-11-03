@@ -84,4 +84,7 @@ class UrlController(private val urlService: UrlService) {
         }
     }
 
+    @GetMapping("/all")
+    fun getAll(): List<Url> = urlService.getAllUrls()
+
 }
