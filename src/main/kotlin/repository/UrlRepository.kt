@@ -1,4 +1,8 @@
 package org.example.repository
 
-class UrlRepository {
-}
+import org.example.model.Url
+import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+interface UrlRepository : MongoRepository<Url, String> { }
