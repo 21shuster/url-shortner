@@ -21,39 +21,43 @@ class UrlService(private val urlRepository: UrlRepository) {
     }
 
     fun getOriginalUrl(code: String): String? {
-        val url = urlRepository.findById(code)
-        return url.orElse(null)?.originalUrl
+        val url = urlRepository.findByShortCode(code).orElse(null)
+        return url?.originalUrl
     }
 
     fun deleteUrl(code: String): Boolean {
-        return if (urlRepository.existsById(code)) {
-            urlRepository.deleteById(code)
+        val urlOptional = urlRepository.findByShortCode(code)
+        return if (urlOptional.isPresent) {
+            val url = urlOptional.get()
+            urlRepository.deleteById(url?.id)
             true
-        } else false
+        } else {
+            false
+        }
     }
 
     fun updateUrl(code: String, newUrl: String?, newDescription: String?): Url? {
-        val urlOptional = urlRepository.findById(code)
-        return if (urlOptional.isPresent) {
-            val url = urlOptional.get()
-            val updated = url.copy(
-                originalUrl = newUrl ?: url.originalUrl,
-                description = newDescription ?: url.description
+        val urlOptional = urlRepository.findByShortCode(code).orElse(null)
+        return urlOptional?.let {
+            val updated = it.copy(
+                originalUrl = newUrl ?: it.originalUrl,
+                description = newDescription ?: it.description
             )
             urlRepository.save(updated)
-        } else null
+        }
     }
 
     fun incrementClicks(code: String) {
-        val urlOptional = urlRepository.findById(code)
-        if (urlOptional.isPresent) {
-            val url = urlOptional.get()
-            urlRepository.save(url.copy(clicks = url.clicks + 1))
+        val urlOptional = urlRepository.findByShortCode(code).orElse(null)
+        urlOptional?.let {
+            urlRepository.save(it.copy(
+                clicks = it.clicks + 1)
+            )
         }
     }
 
     fun deactivateUrl(code: String): Boolean {
-        val urlOptional = urlRepository.findById(code)
+        val urlOptional = urlRepository.findByShortCode(code)
         return if (urlOptional.isPresent) {
             val url = urlOptional.get()
             urlRepository.save(url.copy(active = false))
