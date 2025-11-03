@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/url")
 class UrlController(private val urlService: UrlService) {
 
+    /**
+     * GET endpoint for root path.
+     * Simple health check / welcome message.
+     */
     @GetMapping("/")
     fun root(): Map<String, String> {
         return mapOf("message" to "URL Shortener API is running!")
