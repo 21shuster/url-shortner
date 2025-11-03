@@ -52,6 +52,15 @@ class UrlService(private val urlRepository: UrlRepository) {
         }
     }
 
+    fun deactivateUrl(code: String): Boolean {
+        val urlOptional = urlRepository.findById(code)
+        return if (urlOptional.isPresent) {
+            val url = urlOptional.get()
+            urlRepository.save(url.copy(active = false))
+            true
+        } else false
+    }
+
     fun getAllUrls(): List<Url> = urlRepository.findAll()
 
 }

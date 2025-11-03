@@ -84,6 +84,16 @@ class UrlController(private val urlService: UrlService) {
         }
     }
 
+    @PutMapping("/{code}/deactivate")
+    fun deactivate(@PathVariable code: String): Map<String, Any> {
+        val success = urlService.deactivateUrl(code)
+        return if (success) {
+            mapOf("message" to "URL deactivated successfully")
+        } else {
+            mapOf("error" to "URL not found")
+        }
+    }
+
     @GetMapping("/all")
     fun getAll(): List<Url> = urlService.getAllUrls()
 
