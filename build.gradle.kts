@@ -16,17 +16,20 @@ repositories {
 dependencies {
 
     testImplementation(kotlin("test"))
-
+    // Spring Boot starter for building REST APIs
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // Spring Data MongoDB (NoSQL database)
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
+    // Kotlin support for reflection & standard library
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
     // Library added for DB vars
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 
+    // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 }

@@ -4,6 +4,9 @@ import org.example.model.Url
 import org.example.service.UrlService
 import org.springframework.web.bind.annotation.*
 
+/**
+ * REST controller exposing endpoints for URL shortening and management.
+ */
 @RestController
 @RequestMapping("/api/url")
 class UrlController(private val urlService: UrlService) {
@@ -17,6 +20,14 @@ class UrlController(private val urlService: UrlService) {
         return mapOf("message" to "URL Shortener API is running!")
     }
 
+    /**
+     * POST endpoint to shorten a given URL.
+     * Accepts parameters:
+     * - url: the original URL to shorten
+     * - description: optional description of the URL
+     * - clientIp: optional client IP (from headers)
+     * Returns a map with the short code and URL details.
+     */
     @PostMapping("/shorten")
     fun shorten(
         @RequestParam url: String,
@@ -27,13 +38,18 @@ class UrlController(private val urlService: UrlService) {
         return mapOf(
             "shortCode" to savedUrl.shortCode,
             "originalUrl" to savedUrl.originalUrl,
-            "createdAt" to savedUrl.createdAt,  // Instant timestamp
+            "createdAt" to savedUrl.createdAt,  // Instant timestamp of creation
             "description" to savedUrl.description,
-            "clicks" to savedUrl.clicks,
-            "active" to savedUrl.active
+            "clicks" to savedUrl.clicks,        // Number of times URL has been accessed
+            "active" to savedUrl.active         // Status if URL is active
         )
     }
 
+    /**
+     * GET endpoint to resolve the original URL from a short code.
+     * Increments the click count if URL exists.
+     * Returns the original URL or an error message if not found.
+     */
     @GetMapping("/{code}")
     fun resolve(@PathVariable code: String): Map<String, Any?> {
         val original = urlService.getOriginalUrl(code)
@@ -45,6 +61,10 @@ class UrlController(private val urlService: UrlService) {
         }
     }
 
+    /**
+     * DELETE endpoint to remove a URL by its short code.
+     * Returns a success or error message.
+     */
     @DeleteMapping("/{code}")
     fun delete(@PathVariable code: String): Map<String, Any> {
         val success = urlService.deleteUrl(code)
@@ -55,6 +75,11 @@ class UrlController(private val urlService: UrlService) {
         }
     }
 
+    /**
+     * PUT endpoint to update a URL or its description.
+     * Accepts optional new URL and new description.
+     * Returns updated URL details or an error message.
+     */
     @PutMapping("/{code}/update")
     fun update(
         @PathVariable code: String,
@@ -76,6 +101,10 @@ class UrlController(private val urlService: UrlService) {
         }
     }
 
+    /**
+     * PUT endpoint to deactivate a short URL manually.
+     * Returns success or error message.
+     */
     @PutMapping("/{code}/deactivate")
     fun deactivate(@PathVariable code: String): Map<String, Any> {
         val success = urlService.deactivateUrl(code)
@@ -86,6 +115,10 @@ class UrlController(private val urlService: UrlService) {
         }
     }
 
+    /**
+     * GET endpoint to retrieve all URLs in the system.
+     * Returns a list of Url objects.
+     */
     @GetMapping("/all")
     fun getAll(): List<Url> = urlService.getAllUrls()
 

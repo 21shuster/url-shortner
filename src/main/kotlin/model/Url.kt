@@ -4,6 +4,11 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
 
+/**
+ * Represents a shortened URL document stored in MongoDB.
+ * Each document contains information about the original URL,
+ * its shortened code, metadata, and usage statistics.
+ */
 @Document(collection = "urls")
 data class Url(
     /** MongoDB auto-generated document ID */
