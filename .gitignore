@@ -5,3 +5,4 @@
 /.gradle/
 /*.log
 /.DS_Store
+.env
