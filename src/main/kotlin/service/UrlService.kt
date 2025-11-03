@@ -2,7 +2,10 @@ package org.example.service
 
 import org.example.model.Url
 import org.example.repository.UrlRepository
+import org.example.exception.InvalidUrlException
 import org.springframework.stereotype.Service
+import java.net.URI
+import java.net.URISyntaxException
 import java.time.Instant
 import java.util.UUID
 
@@ -22,11 +25,12 @@ class UrlService(private val urlRepository: UrlRepository) {
      * @return Saved Url object with short code and metadata
      */
     fun shortenUrl(originalUrl: String, description: String?, clientIp: String?): Url {
+        validateUrl(originalUrl) // Validate before saving
         val shortCode = UUID.randomUUID().toString().substring(0, 8) // Generate 8-character short code
         val url = Url(
             shortCode = shortCode,
             originalUrl = originalUrl,
-            createdAt = Instant.now(), // Use current timestamp
+            createdAt = Instant.now(),
             description = description
         )
         return urlRepository.save(url)
@@ -53,9 +57,7 @@ class UrlService(private val urlRepository: UrlRepository) {
         val urlOptional = urlRepository.findByShortCode(code)
         return if (urlOptional.isPresent) {
             val url = urlOptional.get()
-            url.id?.let { id ->
-                urlRepository.deleteById(id)
-            }
+            url.id?.let { id -> urlRepository.deleteById(id) }
             true
         } else {
             false
@@ -74,6 +76,7 @@ class UrlService(private val urlRepository: UrlRepository) {
     fun updateUrl(code: String, newUrl: String?, newDescription: String?): Url? {
         val urlOptional = urlRepository.findByShortCode(code).orElse(null)
         return urlOptional?.let {
+            newUrl?.let { validateUrl(it) } // Validate new URL if provided
             val updated = it.copy(
                 originalUrl = newUrl ?: it.originalUrl,
                 description = newDescription ?: it.description
@@ -90,9 +93,7 @@ class UrlService(private val urlRepository: UrlRepository) {
     fun incrementClicks(code: String) {
         val urlOptional = urlRepository.findByShortCode(code).orElse(null)
         urlOptional?.let {
-            urlRepository.save(it.copy(
-                clicks = it.clicks + 1) // Increment clicks
-            )
+            urlRepository.save(it.copy(clicks = it.clicks + 1))
         }
     }
 
@@ -118,4 +119,20 @@ class UrlService(private val urlRepository: UrlRepository) {
      */
     fun getAllUrls(): List<Url> = urlRepository.findAll()
 
+    /**
+     * Validates that a string is a properly formatted URL.
+     *
+     * @param url URL string to validate
+     * @throws InvalidUrlException if the URL is not valid
+     */
+    private fun validateUrl(url: String) {
+        try {
+            val uri = URI(url) // Throws MalformedURLException if invalid
+            if (uri.scheme == null || uri.host == null) {
+                throw InvalidUrlException("Invalid URL: $url")
+            }
+        } catch (e: URISyntaxException) {
+            throw InvalidUrlException("Invalid URL: $url")
+        }
+    }
 }
