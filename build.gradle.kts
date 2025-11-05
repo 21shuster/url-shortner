@@ -1,11 +1,11 @@
 plugins {
     kotlin("jvm") version "2.2.20"
-    id("org.springframework.boot") version "3.3.2"
-    id("io.spring.dependency-management") version "1.1.5"
+    id("org.springframework.boot") version "3.3.4"
+    id("io.spring.dependency-management") version "1.1.6"
     kotlin("plugin.spring") version "2.0.20"
 }
 
-group = "org.example"
+group = "com.urlshortener"
 version = "1.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -29,9 +29,24 @@ dependencies {
     // Library added for DB vars
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 
-    // Test dependencies
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // --- Testing frameworks ---
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.mockito", module = "mockito-core")
+    }
 
+    // --- Mockito for Kotlin ---
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+
+    // --- Assertions ---
+    testImplementation("org.assertj:assertj-core:3.26.0")
+
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
 tasks.test {

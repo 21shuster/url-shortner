@@ -1,6 +1,6 @@
 # URL Shortener API - MVP
 
-This project is a **minimal viable product (MVP)** of a URL shortening service built with **Kotlin** and **Spring Boot**, using **MongoDB** as the database. It allows users to shorten URLs, retrieve original URLs, track clicks, update, and deactivate shortened URLs.
+This project is a **minimal viable product (MVP)** of a URL shortening application built with **Kotlin** and **Spring Boot**, using **MongoDB** as the database. It allows users to shorten URLs, retrieve original URLs, track clicks, update, and deactivate shortened URLs.
 
 ---
 

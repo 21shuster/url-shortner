@@ -1,9 +1,8 @@
-package org.example.repository
+package infraestructure.repository
 
-import org.example.model.Url
+import domain.Url
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
-import java.util.Optional
 
 /**
  * Repository interface for performing CRUD operations on Url objects in MongoDB.
@@ -19,6 +18,6 @@ interface UrlRepository : MongoRepository<Url, String> {
      * @param shortCode the unique short code of the URL
      * @return Optional<Url> object
      */
-    fun findByShortCode(shortCode: String): Optional<Url>
+    fun findByShortCode(shortCode: String): Url?
 
 }
