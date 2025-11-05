@@ -1,3 +1,5 @@
+package com.urlshortener
+
 import io.github.cdimascio.dotenv.dotenv
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -6,14 +8,7 @@ import org.springframework.boot.runApplication
  * Main entry point for the Spring Boot application.
  * Loads environment variables for MongoDB credentials and starts the application.
  */
-@SpringBootApplication(
-    scanBasePackages = [
-        "com.urlshortener",
-        "api",
-        "application",
-        "domain"
-    ]
-)
+@SpringBootApplication
 class Application
 
 fun main(args: Array<String>) {

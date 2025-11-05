@@ -1,7 +1,9 @@
-package api
+package com.urlshortener.api
 
-import api.dto.UrlResponseDto
-import application.UrlService
+import com.urlshortener.api.dto.UrlResponseDto
+import com.urlshortener.application.UrlService
+import com.urlshortener.Application
+import com.urlshortener.domain.Url
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.verify
@@ -28,7 +30,7 @@ class UrlControllerTest @Autowired constructor(
 
     @Test
     fun `should return health check message`() {
-        mockMvc.get("/api/url/")
+        mockMvc.get("/com/urlshortener/api/url/")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.message") { value("URL Shortener API is running!") }
@@ -49,7 +51,7 @@ class UrlControllerTest @Autowired constructor(
             active = true
         )
         whenever(urlService.shortenUrl(any(), anyOrNull(), anyOrNull())).thenReturn(
-            domain.Url(
+            Url(
                 id = "1",
                 originalUrl = dto.originalUrl,
                 shortCode = dto.shortCode,
@@ -59,7 +61,7 @@ class UrlControllerTest @Autowired constructor(
         )
 
         // When + Then
-        mockMvc.post("/api/url/shorten") {
+        mockMvc.post("/com/urlshortener/api/url/shorten") {
             contentType = MediaType.APPLICATION_JSON
             content = """{"originalUrl": "https://example.com", "description": "Example"}"""
         }.andExpect {
@@ -74,7 +76,7 @@ class UrlControllerTest @Autowired constructor(
     fun `should resolve short code`() {
         whenever(urlService.getOriginalUrl("xyz")).thenReturn("https://kotlinlang.org")
 
-        mockMvc.get("/api/url/xyz")
+        mockMvc.get("/com/urlshortener/api/url/xyz")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.originalUrl") { value("https://kotlinlang.org") }

@@ -1,4 +1,4 @@
-package api.handler
+package com.urlshortener.api.handler
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

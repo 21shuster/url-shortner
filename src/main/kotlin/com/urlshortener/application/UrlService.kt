@@ -1,8 +1,8 @@
-package application
+package com.urlshortener.application
 
-import domain.Url
-import domain.validation.UrlValidator
-import infraestructure.repository.UrlRepository
+import com.urlshortener.domain.Url
+import com.urlshortener.domain.validation.UrlValidator
+import com.urlshortener.infrastructure.repository.UrlRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Instant

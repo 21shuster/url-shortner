@@ -1,4 +1,4 @@
-package infraestructure.config
+package com.urlshortener.infrastructure.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories

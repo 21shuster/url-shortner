@@ -1,6 +1,6 @@
-package api.dto
+package com.urlshortener.api.dto
 
-import domain.Url
+import com.urlshortener.domain.Url
 import java.time.Instant
 
 /**

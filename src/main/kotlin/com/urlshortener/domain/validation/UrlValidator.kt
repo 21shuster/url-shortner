@@ -1,6 +1,6 @@
-package domain.validation
+package com.urlshortener.domain.validation
 
-import domain.exception.InvalidUrlException
+import com.urlshortener.domain.exception.InvalidUrlException
 import org.springframework.stereotype.Component
 import java.net.URI
 import java.net.URISyntaxException

@@ -1,8 +1,8 @@
-package api
+package com.urlshortener.api
 
-import api.dto.UrlRequestDto
-import api.dto.UrlResponseDto
-import application.UrlService
+import com.urlshortener.api.dto.UrlRequestDto
+import com.urlshortener.api.dto.UrlResponseDto
+import com.urlshortener.application.UrlService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
  * deleting, and listing shortened URLs.
  */
 @RestController
-@RequestMapping("/api/url")
+@RequestMapping("/com/urlshortener/api/url")
 class UrlController(private val urlService: UrlService) {
 
     private val logger = LoggerFactory.getLogger(UrlController::class.java)
@@ -41,7 +41,7 @@ class UrlController(private val urlService: UrlService) {
     ): UrlResponseDto {
         logger.info("Received request to shorten URL: ${request.originalUrl}")
         val url = urlService.shortenUrl(request.originalUrl, request.description, clientIp)
-        return UrlResponseDto.fromDomain(url)
+        return UrlResponseDto.Companion.fromDomain(url)
     }
 
     /**
@@ -73,7 +73,7 @@ class UrlController(private val urlService: UrlService) {
         @RequestBody request: UrlRequestDto
     ): Any {
         val updated = urlService.updateUrl(code, request.originalUrl, request.description)
-        return updated?.let { UrlResponseDto.fromDomain(it) }
+        return updated?.let { UrlResponseDto.Companion.fromDomain(it) }
             ?: mapOf("error" to "URL not found")
     }
 
@@ -110,6 +110,6 @@ class UrlController(private val urlService: UrlService) {
      */
     @GetMapping("/all")
     fun getAll(): List<UrlResponseDto> =
-        urlService.getAllUrls().map { UrlResponseDto.fromDomain(it) }
+        urlService.getAllUrls().map { UrlResponseDto.Companion.fromDomain(it) }
 
 }

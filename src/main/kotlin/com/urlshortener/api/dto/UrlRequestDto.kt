@@ -1,4 +1,4 @@
-package api.dto
+package com.urlshortener.api.dto
 
 import java.time.Instant
 

@@ -1,6 +1,6 @@
-package infraestructure.repository
+package com.urlshortener.infrastructure.repository
 
-import domain.Url
+import com.urlshortener.domain.Url
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
