@@ -1,67 +1,83 @@
-# URL Shortener API - MVP
+# 🧩 URL Shortener – Kotlin + Spring Boot + MongoDB + Docker
 
-This project is a **minimal viable product (MVP)** of a URL shortening application built with **Kotlin** and **Spring Boot**, using **MongoDB** as the database. It allows users to shorten URLs, retrieve original URLs, track clicks, update, and deactivate shortened URLs.
-
----
-
-## Features
-
-* Shorten any valid URL with an auto-generated short code.
-* Retrieve the original URL by short code.
-* Increment click count each time a shortened URL is accessed.
-* Update URL or description.
-* Deactivate URLs manually.
-* Basic input validation and error handling.
-* MongoDB persistence.
+A simple and production-ready **URL Shortener API** built with **Kotlin**, **Spring Boot 3**, and **MongoDB**, containerized with **Docker Compose**.
+This MVP provides endpoints for creating, retrieving, updating, deactivating, and deleting shortened URLs, with click tracking and optional descriptions.
 
 ---
 
-## Technologies
+## 🚀 Features
 
-* Kotlin 2.2.x
-* Spring Boot 3.3.x
-* Spring Data MongoDB
-* JUnit 5 (for testing)
-* dotenv for environment variables
+* ✨ Shorten any valid URL with a generated short code
+* 📋 Retrieve original URLs using short codes
+* 🛠 Update or deactivate existing links
+* 📊 Track number of clicks
+* 🧱 Fully containerized (App + MongoDB) with Docker Compose
+* 🔒 Environment variable management via `.env`
 
 ---
 
-## Getting Started
+## 🗂 Project Structure
 
-### Prerequisites
-
-* Java 21
-* MongoDB Atlas or local MongoDB instance
-* Gradle 8.x
-
-### Environment Variables
-
-Create a `.env` file at the project root:
-
-```dotenv
-MONGO_USER=<your_mongo_user>
-MONGO_PASSWORD=<your_mongo_password>
+```
+url-shortener/
+├── api/                     # REST controllers
+│   └── UrlController.kt
+├── application/              # Business logic layer
+│   └── UrlService.kt
+├── domain/                   # Domain models & validation
+│   └── Url.kt
+│   └── validation/UrlValidator.kt
+├── infraestructure/          # MongoDB repository
+│   └── repository/UrlRepository.kt
+├── src/main/resources/       # Spring configuration files
+├── src/test/kotlin/api/      # Controller tests (JUnit + Mockito)
+│   └── UrlControllerTest.kt
+├── Dockerfile
+├── docker-compose.yml
+├── build.gradle.kts
+├── settings.gradle.kts
+└── .env
 ```
 
-### Run the Application
+---
+
+## ⚙️ Environment Variables
+
+Your `.env` file (in the project root) should look like this:
+
+```env
+MONGO_USER=admin
+MONGO_PASSWORD=secret
+MONGO_DB=url_shortener
+MONGO_HOST=mongo
+MONGO_PORT=27017
+```
+
+These variables are automatically loaded by Spring Boot when the container starts.
+
+---
+
+## 🐳 Docker Deployment
+
+### 1️⃣ Build and run with Docker Compose
 
 ```bash
-./gradlew bootRun
+docker compose up --build
 ```
 
-Application runs by default on port `8080`.
+This will:
 
----
+* Build the Kotlin Spring Boot app
+* Launch a MongoDB container
+* Start both with proper networking and environment variables
 
-## API Endpoints
+Once up, visit:
 
-### Health Check
-
-```http
-GET /api/url/
+```
+http://localhost:8080/api/url/
 ```
 
-**Response:**
+You should see:
 
 ```json
 {
@@ -71,135 +87,55 @@ GET /api/url/
 
 ---
 
-### Shorten URL
+### 2️⃣ Stop the containers
 
-```http
-POST /api/url/shorten
-```
-
-**Parameters:**
-
-* `url` (required): The original URL.
-* `description` (optional): Description of the URL.
-* `X-Forwarded-For` (optional): Client IP.
-
-**Response:**
-
-```json
-{
-  "shortCode": "abcd1234",
-  "originalUrl": "https://example.com",
-  "createdAt": "2025-11-03T14:21:30.123Z",
-  "description": "Example site",
-  "clicks": 0,
-  "active": true
-}
+```bash
+docker compose down
 ```
 
 ---
 
-### Resolve URL
+## 🧠 API Endpoints
 
-```http
-GET /api/url/{code}
+| Method   | Endpoint                                        | Description                              |
+| -------- | ----------------------------------------------- | ---------------------------------------- |
+| `GET`    | `/api/url/`                                     | Health check endpoint                    |
+| `POST`   | `/api/url/shorten?url={url}&description={desc}` | Create a shortened URL                   |
+| `GET`    | `/api/url/{code}`                               | Resolve a short code to its original URL |
+| `PUT`    | `/api/url/{code}/update`                        | Update the original URL or description   |
+| `PUT`    | `/api/url/{code}/deactivate`                    | Deactivate a link                        |
+| `DELETE` | `/api/url/{code}`                               | Delete a link                            |
+| `GET`    | `/api/url/all`                                  | Retrieve all URLs                        |
+
+---
+
+## 🧪 Running Tests
+
+```bash
+./gradlew test
 ```
 
-**Response if found:**
+Tests are written with **JUnit 5** and **Mockito Kotlin**.
+To run them inside Docker, use:
 
-```json
-{
-  "originalUrl": "https://example.com"
-}
-```
-
-**Response if not found:**
-
-```json
-{
-  "error": "URL not found or expired"
-}
+```bash
+docker compose run app ./gradlew test
 ```
 
 ---
 
-### Update URL
+## 🧱 Build Jar Locally (optional)
 
-```http
-PUT /api/url/{code}/update
-```
+If you want to build and run without Docker:
 
-**Parameters:**
-
-* `newUrl` (optional)
-* `newDescription` (optional)
-
-**Response:** Returns updated URL object or error if not found.
-
----
-
-### Delete URL
-
-```http
-DELETE /api/url/{code}
-```
-
-**Response:**
-
-```json
-{
-  "message": "URL deleted successfully"
-}
-```
-
-or
-
-```json
-{
-  "error": "URL not found"
-}
+```bash
+./gradlew clean build -x test
+java -jar build/libs/url-shortener-0.0.1-SNAPSHOT.jar
 ```
 
 ---
 
-### Deactivate URL
+## 📜 License
 
-```http
-PUT /api/url/{code}/deactivate
-```
-
-**Response:** Success or error message.
-
----
-
-### Get All URLs
-
-```http
-GET /api/url/all
-```
-
-**Response:** List of all URL objects in the system.
-
----
-
-## Validation & Error Handling
-
-* Only valid URLs are accepted.
-* Errors return proper HTTP statuses:
-
-  * `400 Bad Request` for invalid URL.
-  * `404 Not Found` for missing resources.
-* Global error handling via `UrlApiExceptionHandler`.
-
----
-
-## Notes
-
-* Short codes are generated with 8 characters.
-* The `clicks` count increments automatically on access.
-* MongoDB connection uses credentials from `.env` file.
-
----
-
-## License
-
-MIT License
+MIT License © 2025 — Developed by Alejandro García.
+Use freely for learning, prototyping, or building your own link shortener 🚀

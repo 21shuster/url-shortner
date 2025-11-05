@@ -26,9 +26,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
-    // Library added for DB vars
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
-
     // --- Testing frameworks ---
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.mockito", module = "mockito-core")

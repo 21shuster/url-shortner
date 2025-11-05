@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
  * deleting, and listing shortened URLs.
  */
 @RestController
-@RequestMapping("/com/urlshortener/api/url")
+@RequestMapping("/api/url")
 class UrlController(private val urlService: UrlService) {
 
     private val logger = LoggerFactory.getLogger(UrlController::class.java)
